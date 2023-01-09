@@ -1,0 +1,32 @@
+using Flux
+
+f(x) = 4x^2 + 3x + 2;
+
+df(x) = gradient(f, x)[1];
+
+abstract type DescentMethod end
+
+mutable struct Adagrad <: DescentMethod
+α # learning rate
+ϵ # small value
+s # sum of squared gradient
+end
+
+function init!(M::Adagrad, f, df, x)
+M.s = zeros(length(x))
+return M
+end
+
+function step!(M::Adagrad, f, df, x)
+α, ϵ, s, g = M.α, M.ϵ, M.s, df(x)
+s=g*g
+return x - α*g ./ (sqrt.(s) .+ ϵ)
+end
+
+M=Adagrad(0.01,0.0001,0.01)
+Adagrad(0.01, 0.0001, 0.01)
+
+result=step!(M,f,df,2)
+1.990000052631302
+
+
