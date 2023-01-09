@@ -1,0 +1,23 @@
+using GaussianProcesses
+
+using Random
+Random.seed!(20140430)
+
+n=10;
+x = 2π * rand(n); 
+y = sin.(x) + 0.05*randn(n); 
+
+mZero = MeanZero() 
+kern = SE(0.0,0.0)
+
+logObsNoise = -1.0
+
+gp = GP(x,y,mZero,kern,logObsNoise)
+x = 0:0.1:2π
+
+using Plots
+plot(gp; obsv=false)
+optimize!(gp)
+plot(gp; obsv=false, label="GP posterior mean", fmt=:png)
+samples = rand(gp, x, 5)
+plot!(x, samples) 
